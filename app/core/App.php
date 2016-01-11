@@ -2,7 +2,7 @@
 
 class App {
 
-	protected $controller = "LoginController";
+	protected $controller = "WelcomeController";
 	protected $method = "index";
 	protected $params = [];
 
@@ -22,7 +22,7 @@ class App {
 		}
 		# end
 
-		# if url is set id=1
+		# if url is set {id=1}
 
 		// getting subdirectory
 		$controller_subdir = "";

@@ -41,7 +41,7 @@ class Controller extends Mustache {
 	private function initializeVars() {
 		global $ASSETS, $PUBLIC_DIR;
 
-		self::$vars['SITE_NAME'] = "Message System";
+		self::$vars['SITE_NAME'] = "SITE_NAME";
 		self::$vars['NOW'] 		 = DATE('y-m-d');
 		self::$vars['PUBLIC']	 = $PUBLIC_DIR;
 		self::$vars['ASSETS'] 	 = $ASSETS;

@@ -5,7 +5,7 @@ class DB {
 
 	public function __construct() {
 		// mysqli(hostname, username, password, database_name);
-		@$this->_db = new mysqli("localhost", "RodrigoConan", "phpmyJava1036", "user");
+		@$this->_db = new mysqli("localhost", "root", "", "test");
 
 		if ( mysqli_connect_errno() ) {
 			$error_code    = $this->_db->connect_errno;
