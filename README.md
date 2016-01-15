@@ -5,7 +5,7 @@ Folder Structured
 - mvc with mustache/
 |--app/
 |	|--controllers/
-|	|	|--Home.php
+|	|	|--HomeController.php
 |	|
 |	|--core/
 | 	|	|--App.php
