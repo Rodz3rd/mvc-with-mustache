@@ -31,18 +31,21 @@ class Controller extends Mustache {
 	private function initMustache($path, $template, $vars) {
 		global $APP_DIR, $TMP_EXT;
 
-		$this->initializeVars();
+		$this->initializeVars($template);
 		$this->addVars($vars);
 		$this->setTemplate($path, $template);
 		$this->loader = new MustacheLoader("$APP_DIR/$path", $TMP_EXT);
 
 	}
 
-	private function initializeVars() {
+	private function initializeVars($template) {
 		global $ASSETS, $PUBLIC_DIR;
 
-		self::$vars['SITE_NAME'] = "SITE_NAME";
+		self::$vars['SITE_NAME'] = "Practice";
+		self::$vars['template']  = ($template == "index") ? " " : "| $template"; # page title
+
 		self::$vars['NOW'] 		 = DATE('y-m-d');
+		
 		self::$vars['PUBLIC']	 = $PUBLIC_DIR;
 		self::$vars['ASSETS'] 	 = $ASSETS;
 		

@@ -1,11 +1,23 @@
-<?php
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
 
-$var = [1,2];
+<input type="file" id="file" />
 
-next($var);next($var);
+<script type="text/javascript" src="public/assets/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+$(function () {
+	$("#file").change( function () {
+		var file = $(this).val().split('\\');
 
-while ( $val = current($var) ) {
-	echo $val;
-	
-	next($var);
-}
+
+		console.log( file[file.length - 1] );
+	})
+});
+</script>
+
+</body>
+</html>

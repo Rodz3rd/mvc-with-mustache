@@ -2,6 +2,7 @@
 
 class DB {
 	private $_db;
+	public static $table;
 
 	public function __construct() {
 		// mysqli(hostname, username, password, database_name);
@@ -26,14 +27,14 @@ class DB {
 		 	- condition have many options too
 		 		1. ['field', 'operator', 'value']
 		 		2.  [
-		 				['field1', 'operator', 'value'],
-		 				['field2', 'operator', 'value'],
+		 				['field1', 'operator', 'value', 'logicalOperator'],
+		 				['field2', 'operator', 'value', 'logicalOperator'],
 		 				... ,
-		 				['fieldN', 'operator', 'value']
+		 				['fieldN', 'operator', 'value'] // no logical operator in the last of condition
 		 			]
 	
 	*/
-	public function select($fields, $condition="") {
+	public function select($fields, $condition="", $return1Row=false) {
 		try {
 			$query = "SELECT ";
 
@@ -52,13 +53,18 @@ class DB {
 			// condition
 			if ( $condition != "" ) {
 				$query .= " WHERE ";
-				for ( $i = 0; $i < count($condition); $i+=2 ) {
-					$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
 
-					if ( !empty( $condition[$i+1] ) ) {
-						$query .= " " . $condition[$i+1] . " ";
-					} else {
-						break;
+				if ( !is_array($condition[0]) ) { // if only one condition
+					$query .= $condition[0] . $condition[1] . "'" . $this->_db->real_escape_string($condition[2]) . "'";
+				} else {
+					for ( $i = 0; $i < count($condition); $i++ ) {
+						$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
+
+						if ( !empty( $condition[$i+1] ) ) {
+							$query .= " " . $condition[$i][3] . " ";
+						} else {
+							break;
+						}
 					}
 				}
 			}
@@ -67,12 +73,15 @@ class DB {
 			$result = $this->_db->query($query);
 
 			if ( $result != false ) {
-				if ( $result->num_rows > 0 ) {
+				if ( $return1Row === true ) {
+					return $result->fetch_assoc();
+				} elseif ( $result->num_rows > 0 ) {
 					while ( $row = $result->fetch_assoc() ) {
 						$rows[] = $row;
 					}
 
 					$result->free();
+
 					return $rows;
 				} else {
 					error_log( "Mysql 0 row result." );
@@ -162,10 +171,10 @@ class DB {
 		 	- condition have many options
 		 		1. ['field', 'operator', 'value']
 		 		2.  [
-		 				['field1', 'operator', 'value'],
-		 				['field2', 'operator', 'value'],
+		 				['field1', 'operator', 'value', 'logicalOperator'],
+		 				['field2', 'operator', 'value', 'logicalOperator'],
 		 				... ,
-		 				['fieldN', 'operator', 'value']
+		 				['fieldN', 'operator', 'value'] // no logical operator in the last of condition
 		 			]
 	
 	*/
@@ -182,13 +191,17 @@ class DB {
 			if ( $condition != "" ) {
 				$query .= " WHERE ";
 
-				for ( $i = 0; $i < count($condition); $i+=2 ) {
-					$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
+				if ( !is_array($condition[0]) ) { // if only one condition
+					$query .= $condition[0] . $condition[1] . "'" . $this->_db->real_escape_string($condition[2]) . "'";
+				} else {
+					for ( $i = 0; $i < count($condition); $i++ ) {
+						$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
 
-					if ( !empty( $condition[$i+1] ) ) {
-						$query .= " " . $condition[$i+1] . " ";
-					} else {
-						break;
+						if ( !empty( $condition[$i+1] ) ) {
+							$query .= " " . $condition[$i][3] . " ";
+						} else {
+							break;
+						}
 					}
 				}
 			}
@@ -219,11 +232,11 @@ class DB {
 		- condition have many options
 			1. ['field', 'operator', 'value']
 			2.  [
-					['field1', 'operator', 'value'],
-					['field2', 'operator', 'value'],
-					... ,
-					['fieldN', 'operator', 'value']
-				]
+	 				['field1', 'operator', 'value', 'logicalOperator'],
+	 				['field2', 'operator', 'value', 'logicalOperator'],
+	 				... ,
+	 				['fieldN', 'operator', 'value'] // no logical operator in the last of condition
+	 			]
 	*/
 	public function delete($condition="") {
 		try {
@@ -233,18 +246,20 @@ class DB {
 			if ( $condition != "" ) {
 				$query .= " WHERE ";
 
-				for ( $i = 0; $i < count($condition); $i+=2 ) {
-					$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
+				if ( !is_array($condition[0]) ) { // if only one condition
+					$query .= $condition[0] . $condition[1] . "'" . $this->_db->real_escape_string($condition[2]) . "'";
+				} else {
+					for ( $i = 0; $i < count($condition); $i++ ) {
+						$query .= $condition[$i][0] . $condition[$i][1] . "'" . $this->_db->real_escape_string($condition[$i][2]) . "'";
 
-					if ( !empty( $condition[$i+1] ) ) {
-						$query .= " " . $condition[$i+1] . " ";
-					} else {
-						break;
+						if ( !empty( $condition[$i+1] ) ) {
+							$query .= " " . $condition[$i][3] . " ";
+						} else {
+							break;
+						}
 					}
 				}
 			}
-
-			// echo $query;
 
 			$result = $this->_db->query($query);
 
@@ -263,5 +278,33 @@ class DB {
 			error_log($e->getMessage());
 			return false;
 		}	
+	}
+
+	public function customQuery($q, $return1Row=false) {
+		try {
+			$result = $this->_db->query($q);
+
+			if ( $result != false ) {
+				if ( $return1Row === true ) {
+					return $result->fetch_assoc();
+				} elseif ( $result->num_rows > 0 ) {
+					while ( $row = $result->fetch_assoc() ) {
+						$rows[] = $row;
+					}
+
+					$result->free();
+					return $rows;
+				} else {
+					error_log( "Mysql 0 row result." );
+					return null;
+				}
+			} else {
+				error_log( "Error: You have an error in your SQL syntax." );
+				return false;
+			}
+		} catch (Exception $e) {
+			error_log($e->getMessage());
+			return false;
+		}
 	}
 }
